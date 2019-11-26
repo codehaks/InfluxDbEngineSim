@@ -4,6 +4,7 @@ using InfluxData.Net.InfluxDb.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EngineSimulator
@@ -20,9 +21,9 @@ namespace EngineSimulator
 
             var cylinders = new List<Task>();
 
-            for (int i = 1; i < 7; i++)
+            for (int i = 1; i < 4; i++)
             {
-                var task = SimulateData(influxDbClient, i, 1000);
+                var task = SimulateData(influxDbClient, i, 100);
                 cylinders.Add(task);
             }
 
@@ -32,7 +33,7 @@ namespace EngineSimulator
 
         }
 
-        private static async Task SimulateData(InfluxDbClient db, int cylinder, int count = 1000)
+        private static async Task SimulateData(InfluxDbClient db, int cylinder, int count = 100)
         {
             for (int i = 0; i < count; i++)
             {
@@ -52,8 +53,7 @@ namespace EngineSimulator
                     Timestamp = DateTime.UtcNow // optional (can be set to any DateTime moment)
                 };
 
-                var result = await db.Client.WriteAsync(tempData, "MyEngineData");
-
+                await db.Client.WriteAsync(tempData, "MyEngineData");
 
             }
         }
